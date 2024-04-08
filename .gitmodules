@@ -1,0 +1,3 @@
+[submodule "CLI/Tests/Resources/web-basics-hello-world"]
+	path = CLI/Tests/Resources/web-basics-hello-world
+	url = git@github.com:CSharpLevelUp/web-basics-hello-world.git
