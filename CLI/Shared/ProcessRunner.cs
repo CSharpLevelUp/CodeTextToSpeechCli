@@ -82,7 +82,7 @@ public class ProcessRunner: IDisposable
     public void Dispose()
     {
         // So any derived class doesn't need to implement thier own Dispose method
-        if (!_processClosed) process.Clos
+        if (!_processClosed) process.Close();
         GC.SuppressFinalize(this);
         process.Dispose();
     }
