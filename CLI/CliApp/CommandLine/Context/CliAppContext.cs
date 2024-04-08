@@ -60,7 +60,8 @@ namespace CliApp.CommandLine.Context
                 var arg = GetCurrentArg(); 
                 CurrentArgIdx++;
                 return arg;
-            } else throw new CliCommandException("Last Arg");
+            } else if(CurrentArgIdx == 0) return "help";
+            else throw new CliCommandException("Last Arg");
         }
 
         public bool HasNextArg => Args != null && CurrentArgIdx < Args.Length;
