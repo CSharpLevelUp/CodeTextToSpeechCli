@@ -2,14 +2,16 @@
 {
     public class GitWrapper
     {
-        private readonly bool IsSubmodule;
-        private ProcessRunner gitProcess;
+        public readonly bool IsSubmodule;
+        private readonly ProcessRunner gitProcess;
+        public readonly GitSubmodule? Submodule;
         public GitWrapper(string path)
         {
             CliFileHelper fileHelper = new(path);
             CliFileHelperSearchInfo searchInfo = fileHelper.SearchInLowestDirectory(".git") ?? throw new GitWrapperException($"{path} is not a git repo");
             IsSubmodule = searchInfo.Type is CliFileType.File;
             gitProcess = new ProcessRunner("git", path);
+            if (IsSubmodule) Submodule = new GitSubmodule(fileHelper.CurrentPath);
         }
 
         public string GetDiffForPreviousCommit()
@@ -47,11 +49,19 @@
         }
     }
 
-    // TODO: Find git submodule module path
-    // public class GitSubmodule 
-    // {
-    //     public readonly string ParentDirectory;
-    // }
+    public class GitSubmodule 
+    {
+        public readonly string ParentRepoDirectory;
+        public readonly string GitDirectory;
+
+        public GitSubmodule(string submodulePath)
+        {
+            ParentRepoDirectory = new ProcessRunner("git", submodulePath).RunCommand("rev-parse --show-superproject-working-tree");
+            GitDirectory = Path.Join([..ParentRepoDirectory.Split(['/', '\\']), ".git", "modules", Path.GetRelativePath(ParentRepoDirectory, submodulePath)]);
+            CliFileHelper fileHelper = new(GitDirectory);
+            CliFileHelperSearchInfo searchInfo = fileHelper.SearchInLowestDirectory("hooks") ?? throw new GitWrapperException($"{GitDirectory} is not a valid git submodule");
+        }
+    }
 
     public class GitWrapperException(string message) : Exception(message)
     {

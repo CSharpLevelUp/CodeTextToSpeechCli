@@ -11,7 +11,7 @@ public class GitWrapperTests
     [TestMethod]
     public void TestGetDiffForPreviousCommit()
     {
-        var diff = new GitWrapper($"{workingDir}/web-basics-hello-world").GetDiffForPreviousCommit();
+        string diff = new GitWrapper($"{workingDir}/web-basics-hello-world").GetDiffForPreviousCommit();
         Assert.AreEqual(new CliFileHelper(workingDir).ReadFile("two_consecutive_commits.diff"), diff);
     }
 
@@ -61,5 +61,16 @@ public class GitWrapperTests
         string[] expectedFiles = ["README.md", "index.css", "index.html", "index.js"];
         Assert.AreEqual(expectedFiles.Length, commitFiles.Files.Length);
         for (int idx=0; idx < commitFiles.Files.Length; idx++) Assert.AreEqual(expectedFiles[idx], commitFiles.Files[idx]);
+    }
+
+    [TestMethod]
+    public void TestGitSubmodule()
+    {
+        string root = "../../../../../";
+        var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
+        Assert.IsTrue(git.IsSubmodule);
+        Assert.IsNotNull(git.Submodule);
+        Assert.AreEqual(Path.GetFullPath(root)[0..^1], Path.GetFullPath(git.Submodule.ParentRepoDirectory));
+        Assert.AreEqual(Path.GetFullPath(Path.Join([root, ".git", "modules", "CLI", "Tests", "Resources", "web-basics-hello-world"])), git.Submodule.GitDirectory);
     }
 }
