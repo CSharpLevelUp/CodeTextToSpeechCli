@@ -17,4 +17,12 @@ public class CommitMsgAppTests
         Assert.AreEqual(fileHelper.ReadFile(), "Added logic to remove flags in commit message");
         fileHelper.UpdateFileContents(oldCommitMsg);
     }
+
+    [TestMethod]
+    public void TestCreateFlagFile()
+    {
+        string flaggedFilePath = CommitMsgApp.CreateFlagFile(Path.GetFullPath(Path.Join([workingDir, "COMMIT_EDITMSG"])));
+        Assert.IsTrue(Path.Exists(flaggedFilePath));
+        File.Delete(flaggedFilePath);
+    }
 }

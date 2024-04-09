@@ -49,7 +49,7 @@ namespace Shared
             // or trying to create a nested structure
             string newPath = Path.Join([CurrentPath, name]);
             CreatePath(newPath);
-            return newPath;
+            return Path.GetFullPath(newPath);
         }
 
         public static string CreateInLocalAppData(string name)
@@ -57,7 +57,7 @@ namespace Shared
             string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
             string newPath = Path.Join(localAppDataPath, name);
             CreatePath(newPath);
-            return newPath;
+            return Path.GetFullPath(newPath);
         }
 
         public CliFileHelperSearchInfo? SearchInLowestDirectory(string name, bool checkParentDirectoryIfFile=false)
@@ -78,24 +78,24 @@ namespace Shared
                     File.GetAttributes(path).HasFlag(FileAttributes.Directory) 
                         ? CliFileType.Directory 
                         : CliFileType.File,
-                    path
+                    Path.GetFullPath(path)
                 );
             } catch (FileNotFoundException) {
                 return null;
             }   
         }
 
-        private string GetDirectoryName()
+        public string GetDirectoryPath()
         {
-            var directoryPath = ((!IsDirectory) ? CurrentPath : Path.GetDirectoryName(CurrentPath)) ?? throw new ArgumentException($"Null returned when getting {CurrentPath} parent directory");
-            var parentDirectoryPath = Path.GetDirectoryName(directoryPath) ?? throw new ArgumentException($"Null returned when getting {directoryPath} parent directory");
-            return Path.GetRelativePath(parentDirectoryPath, directoryPath);
+            var path = ((IsDirectory) ? CurrentPath : Path.GetDirectoryName(CurrentPath)) ?? throw new ArgumentException($"Null returned when getting {CurrentPath} parent directory");
+            return Path.GetFullPath(path);
         }
+
 
         private string GetFilePath(string? filename=null)
         {
             if (IsDirectory && filename is null) throw new ArgumentException($"{CurrentPath} is a directory, and a file wasn't specified");
-            else if (IsDirectory && filename is not null) return Path.Join(CurrentPath, filename);
+            else if (IsDirectory && filename is not null) return Path.GetFullPath(Path.Join(CurrentPath, filename));
             else return CurrentPath;
         }
 
@@ -121,6 +121,14 @@ namespace Shared
         public void UpdateFileContents(string newContent, string? filename=null)
         {
             File.WriteAllText(GetFilePath(filename), newContent);
+        }
+
+        public void DeletePath(string? filename=null)
+        {
+            string workingPath = CurrentPath;
+            if (IsDirectory && filename is not null) workingPath = Path.Join(workingPath, filename);
+            else if (!IsDirectory && filename is not null) workingPath = Path.Join(GetDirectoryPath(), filename);
+            File.Delete(workingPath);
         }
     }
 

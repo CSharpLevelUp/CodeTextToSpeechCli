@@ -27,4 +27,12 @@ public class CliFileHelperTests
         fileHelper.UpdateFileContents("", filename);
         Assert.AreEqual("", fileHelper.ReadFile(filename));
     }
+
+    [TestMethod]
+    public void TestGetDirectoryName()
+    {
+        CliFileHelper textFileHelper = new(Path.Join(workingDir, "update_content_from_file.txt"));
+        CliFileHelper dirFileHelper = new(workingDir);
+        Assert.AreEqual(dirFileHelper.CurrentPath[0..^1], textFileHelper.GetDirectoryPath());
+    }
 }

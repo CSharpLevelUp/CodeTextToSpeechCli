@@ -22,5 +22,15 @@ namespace Cli.GitHooks
             string contents = fileHelper.ReadFile();
             if (regex.Matches(contents).Count > 0) fileHelper.UpdateFileContents(contents.Remove(0, "ctts-explain:".Length));
         }
+
+        public static string CreateFlagFile(string path)
+        {
+            CliFileHelper fileHelper = new(path);
+            string parentDirectory = (fileHelper.IsDirectory) ? fileHelper.CurrentPath: fileHelper.GetDirectoryPath();
+            parentDirectory = Path.Join([parentDirectory, "hooks"]);
+            // Should error out if hooks directory doesn't exist
+            fileHelper = new(parentDirectory);
+            return fileHelper.CreateInPath("CTTS_FLAGGED_COMMIT");
+        }
     }
 }
