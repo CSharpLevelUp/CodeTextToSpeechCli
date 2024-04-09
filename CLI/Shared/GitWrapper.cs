@@ -59,7 +59,7 @@
             ParentRepoDirectory = new ProcessRunner("git", submodulePath).RunCommand("rev-parse --show-superproject-working-tree");
             GitDirectory = Path.Join([..ParentRepoDirectory.Split(['/', '\\']), ".git", "modules", Path.GetRelativePath(ParentRepoDirectory, submodulePath)]);
             CliFileHelper fileHelper = new(GitDirectory);
-            CliFileHelperSearchInfo searchInfo = fileHelper.SearchInLowestDirectory("hooks") ?? throw new GitWrapperException($"{GitDirectory} is not a valid git submodule");
+            var _ = fileHelper.SearchInLowestDirectory("hooks") ?? throw new GitWrapperException($"{GitDirectory} is not a valid git submodule");
         }
     }
 
