@@ -12,9 +12,9 @@ namespace CliApp.CommandLine.Context
         {
             return AppContext.AvailableCommands.CommandsMap.Keys;
         }
-        public void SetAvailableCommands(BaseAvailableCommands newAvailableCommands, CommandType type)
+        public void SetAvailableCommands(BaseAvailableCommands newAvailableCommands, BaseCommand command)
         {
-            if (type is CommandType.Action) throw new CliCommandException("Only Namespace commands can set available commands");
+            if (command.Type is CommandType.Action) throw new CliCommandException("Only Namespace commands can set available commands");
             AppContext.AvailableCommands = newAvailableCommands;
         }
 

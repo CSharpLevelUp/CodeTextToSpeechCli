@@ -10,7 +10,7 @@ namespace CliApp.CommandLine.Commands
         public override Dictionary<string, BaseArgument>? Arguments => null;
         public override void Execute(ref CommandContext context)
         {
-            if (context.PreviousRanCommand == null) 
+            if (context.PreviousRanCommand == null || context.PreviousRanCommand.Equals(GetCommandInfo())) 
             {
                 foreach (var commandName in context.GetAvailableCommandNames())
                 {

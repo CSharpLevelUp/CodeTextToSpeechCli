@@ -61,7 +61,7 @@ namespace CliApp.CommandLine.Context
                 CurrentArgIdx++;
                 return arg;
             } else if(CurrentArgIdx == 0) return "help";
-            else throw new CliCommandException("Last Arg");
+            else throw new CliCommandException("Exhausted unprocessed args");
         }
 
         public bool HasNextArg => Args != null && CurrentArgIdx < Args.Length;
@@ -69,12 +69,12 @@ namespace CliApp.CommandLine.Context
         public string? GetNextArgWithoutMovingIdx()
         {
             if (!HasNextArg) return null;
-            return Args[CurrentArgIdx + 1];
+            return Args?[CurrentArgIdx + 1];
         }
 
         public string? GetArgWithoutMovingIdx()
         {
-            if (Args.Length > 0) return Args[CurrentArgIdx];
+            if (Args?.Length > 0) return Args[CurrentArgIdx];
             return null;
         }
     }

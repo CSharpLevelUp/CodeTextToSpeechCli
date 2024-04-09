@@ -22,5 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\CliApp\CliApp.csproj" />
   </ItemGroup>
 </Project>

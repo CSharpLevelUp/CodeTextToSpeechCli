@@ -8,6 +8,12 @@ namespace CliApp.CommandLine.DataClasses
         public readonly string HelpText = command.HelpText;
 
         public readonly string CommandName = command.Name;
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not CommandInfo commandInfo) return false;
+            return Type == command.Type && CommandName == commandInfo.CommandName;
+        }
     }
 
     public enum CommandType
