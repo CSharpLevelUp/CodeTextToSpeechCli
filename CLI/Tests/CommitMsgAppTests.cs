@@ -21,8 +21,13 @@ public class CommitMsgAppTests
     [TestMethod]
     public void TestCreateFlagFile()
     {
-        string flaggedFilePath = CommitMsgApp.CreateFlagFile(Path.GetFullPath(Path.Join([workingDir, "COMMIT_EDITMSG"])));
+        string flaggedFilePath;
+        try
+        {
+            flaggedFilePath = Path.GetFullPath(Path.Join([workingDir, "hooks", "CTTS_FLAGGED_COMMIT"]));
+            File.Delete(flaggedFilePath);
+        } catch(Exception){}
+        flaggedFilePath = CommitMsgApp.CreateFlagFile(Path.GetFullPath(Path.Join([workingDir, "COMMIT_EDITMSG"])));
         Assert.IsTrue(Path.Exists(flaggedFilePath));
-        File.Delete(flaggedFilePath);
     }
 }
