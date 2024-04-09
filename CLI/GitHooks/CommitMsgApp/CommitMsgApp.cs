@@ -9,18 +9,24 @@ namespace Cli.GitHooks
         public static void Main(string[] args)
         {
             string commitMsgFile = args[0];
-            UpdateFlaggedCommitFile(commitMsgFile);
+            var fileHelper = UpdateFlaggedCommitFile(commitMsgFile);
+            if (fileHelper is not null) CreateFlagFile(Path.Join(fileHelper.GetDirectoryPath(), "hooks"));
         }
 
         // Builds regex at compile time
         [GeneratedRegex(@"^ctts-explain:")]
         private static partial Regex FlagRegex();
 
-        public static void UpdateFlaggedCommitFile(string commitMsgFile)
+        public static CliFileHelper? UpdateFlaggedCommitFile(string commitMsgFile)
         {
             CliFileHelper fileHelper = new(commitMsgFile);
             string contents = fileHelper.ReadFile();
-            if (regex.Matches(contents).Count > 0) fileHelper.UpdateFileContents(contents.Remove(0, "ctts-explain:".Length));
+            if (regex.Matches(contents).Count > 0) 
+            {
+                fileHelper.UpdateFileContents(contents.Remove(0, "ctts-explain:".Length));
+                return fileHelper;
+            }
+            return null;
         }
 
         public static string CreateFlagFile(string path)
