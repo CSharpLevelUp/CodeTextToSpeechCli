@@ -17,6 +17,7 @@ namespace Cli.GitHooks
                     string diff = gitWrapper.GetDiffForPreviousCommit(file);
                     // Send diffs to open-ai
                 }
+                fileHelper.DeletePath("CTTS_COMMIT_FLAG");
             }
         }
     }
