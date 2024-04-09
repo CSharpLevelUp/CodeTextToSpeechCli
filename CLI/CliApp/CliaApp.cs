@@ -6,7 +6,7 @@ namespace CliApp
     {
         public static void Main(string[] args)
         {
-            new CommandInvoker(new CliAppContext(args)).Run();
+            new CommandInvoker(new AppState(args)).Run();
         }
     }
 }
