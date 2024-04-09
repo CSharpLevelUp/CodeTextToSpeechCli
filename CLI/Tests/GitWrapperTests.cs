@@ -44,7 +44,7 @@ public class GitWrapperTests
     public void TestGetCommitHashesAndFilesAtHEAD()
     {
         var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
-        var commitFiles = git.GetCommitHashesAndFiles();
+        var commitFiles = git.GetCommitHashAndFiles();
         Assert.AreEqual("62716c9f0e3d93a536f1741c2a4af9597084c82a", commitFiles.Hash);
         string[] expectedFiles = ["README.md"];
         Assert.AreEqual(expectedFiles.Length, commitFiles.Files.Length);
@@ -56,7 +56,7 @@ public class GitWrapperTests
     public void TestGetCommitHashesAndFilesAt1StepFromHEAD()
     {
         var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
-        var commitFiles = git.GetCommitHashesAndFiles(1);
+        var commitFiles = git.GetCommitHashAndFiles(1);
         Assert.AreEqual("a716015cbb15292f808967499de99a356a769378", commitFiles.Hash);
         string[] expectedFiles = ["README.md", "index.css", "index.html", "index.js"];
         Assert.AreEqual(expectedFiles.Length, commitFiles.Files.Length);
