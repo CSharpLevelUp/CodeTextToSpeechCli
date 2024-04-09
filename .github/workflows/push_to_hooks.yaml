@@ -1,0 +1,23 @@
+name: Package-Hooks
+defaults:
+  run:
+    working-directory:
+      CLI/GitHooks
+
+on:
+  push:
+    paths:
+      - CLI/GitHooks/**
+  workflow_dispatch:
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  Package-Hooks:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name:
+        run: echo "Hi"
