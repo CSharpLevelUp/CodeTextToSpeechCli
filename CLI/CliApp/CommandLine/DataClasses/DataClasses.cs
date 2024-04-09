@@ -14,6 +14,11 @@ namespace CliApp.CommandLine.DataClasses
             if (obj is not CommandInfo commandInfo) return false;
             return Type == command.Type && CommandName == commandInfo.CommandName;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public enum CommandType
