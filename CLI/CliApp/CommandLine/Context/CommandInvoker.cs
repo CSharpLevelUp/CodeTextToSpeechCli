@@ -19,7 +19,6 @@ namespace CliApp.CommandLine.Context
             appState.AddCommandToHistory(command);
             command.Execute(ref appStateProxy);
         }
-
         public void Run()
         {
             BaseCommand command;
