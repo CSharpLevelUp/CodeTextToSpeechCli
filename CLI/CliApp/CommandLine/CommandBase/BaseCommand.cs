@@ -84,17 +84,28 @@ namespace CliApp.CommandLine.CommandBase
         {
             _value ??= value;
         }
+        private string? _description = null;
+        public string? Description
+        {
+            get { return _description; }
+            set { if(value is not null) _description ??= value; }
+        }
     }
 
     public class OptionalArgument: BaseArgument
     {
-        public OptionalArgument(string defaultVaule) : base()
+        public OptionalArgument(string description, string defaultVaule) : base()
         {
             Value(defaultVaule);
+            Description = description;
         }
     }
 
     public class RequiredArgument: BaseArgument
     {
+        public RequiredArgument(string description) : base()
+        {
+            Description = description;
+        }
     }
 }
