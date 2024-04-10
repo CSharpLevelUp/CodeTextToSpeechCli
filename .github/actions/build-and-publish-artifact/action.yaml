@@ -54,5 +54,5 @@ runs:
       with:
         upload_url: ${{ inputs.upload-url }}
         asset_path: ${{ inputs.project-directory }}/build-artifacts-${{ inputs.os }}/${{ env.ARTIFACT_NAME }}
-        asset_name: devBean-0.0.1-fat-jar.jar
+        asset_name: ${{ env.ARTIFACT_NAME }}
         asset_content_type: application/zip
