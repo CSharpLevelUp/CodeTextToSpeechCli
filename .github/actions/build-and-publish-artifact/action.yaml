@@ -13,8 +13,11 @@ inputs:
     required: true
   artifact-new-name:
     description: "New name for artifact"
-  upload_url:
+  upload-url:
     description: "Release upload url"
+    required: true
+  github-token:
+    description: "Token for GitHub API access"
     required: true
 
 runs:
@@ -47,9 +50,9 @@ runs:
       id: release_artifact
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       with:
-        upload_url: ${{ inputs.upload_url }}
+        upload_url: ${{ inputs.upload-url }}
         asset_path: ${{ inputs.project-directory }}/build-artifacts-${{ inputs.os }}/${{ env.ARTIFACT_NAME }}
         asset_name: devBean-0.0.1-fat-jar.jar
         asset_content_type: application/zip

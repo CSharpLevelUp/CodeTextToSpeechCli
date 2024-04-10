@@ -50,7 +50,8 @@ jobs:
           os: ${{ matrix.os }}
           project-directory: ./CLI/CliApp
           artifact-name: CliApp${{ matrix.ext }}
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Builda and Upload Commit Message Hook
         uses: ./.github/actions/build-and-publish-artifact
@@ -59,7 +60,8 @@ jobs:
           project-directory: ./CLI/GitHook/CommitMsgApp
           artifact-name: CommitMsgApp${{ matrix.ext }}
           artifact-new-name: commit-msg${{ matrix.ext }}
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Builda and Upload Commit Message Hook
         uses: ./.github/actions/build-and-publish-artifact
@@ -68,4 +70,5 @@ jobs:
           project-directory: ./CLI/GitHook/PostCommitMsgApp
           artifact-name: PostCommitMsgApp${{ matrix.ext }}
           artifact-new-name: post-commit${{ matrix.ext }}
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
