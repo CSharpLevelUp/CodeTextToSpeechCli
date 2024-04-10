@@ -60,7 +60,7 @@ jobs:
         uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
-          project-directory: ./CLI/GitHook/CommitMsgApp
+          project-directory: ./CLI/GitHooks/CommitMsgApp
           artifact-name: CommitMsgApp${{ matrix.ext }}
           artifact-new-name: commit-msg${{ matrix.ext }}
           upload-url: ${{ steps.create-release.outputs.upload_url }}
@@ -70,7 +70,7 @@ jobs:
         uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
-          project-directory: ./CLI/GitHook/PostCommitMsgApp
+          project-directory: ./CLI/GitHooks/PostCommitMsgApp
           artifact-name: PostCommitMsgApp${{ matrix.ext }}
           artifact-new-name: post-commit${{ matrix.ext }}
           upload-url: ${{ steps.create-release.outputs.upload_url }}
