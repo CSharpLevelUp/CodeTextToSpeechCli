@@ -13,4 +13,8 @@
     <Folder Include="CommandLine\Config\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
 </Project>
