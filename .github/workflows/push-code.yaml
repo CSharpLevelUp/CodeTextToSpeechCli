@@ -18,6 +18,8 @@ jobs:
   Package-Cli:
     name: Package-Cli
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         include:
