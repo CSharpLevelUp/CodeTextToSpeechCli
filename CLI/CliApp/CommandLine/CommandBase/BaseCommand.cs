@@ -94,9 +94,9 @@ namespace CliApp.CommandLine.CommandBase
 
     public class OptionalArgument: BaseArgument
     {
-        public OptionalArgument(string description, string defaultVaule) : base()
+        public OptionalArgument(string description, string defaultValue="") : base()
         {
-            Value(defaultVaule);
+            Value(defaultValue);
             Description = description;
         }
     }
