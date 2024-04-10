@@ -10,7 +10,7 @@ namespace CliApp.CommandLine.Commands
 
         public override Dictionary<string, BaseArgument>? Arguments => null;
 
-        public override void Execute(ref CommandContext context)
+        public override void Execute(ref AppStateProxy appProxy)
         {
             Console.WriteLine("Executing Auth Command");
         }

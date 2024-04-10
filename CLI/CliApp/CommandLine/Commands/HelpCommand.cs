@@ -8,17 +8,17 @@ namespace CliApp.CommandLine.Commands
         public override string Name => "help";
         public override string HelpText => "Help Command Text";
         public override Dictionary<string, BaseArgument>? Arguments => null;
-        public override void Execute(ref CommandContext context)
+        public override void Execute(ref AppStateProxy appProxy)
         {
-            if (context.PreviousRanCommand == null) 
+            if (appProxy.PreviousRanCommand == null || appProxy.PreviousRanCommand.Equals(GetCommandInfo())) 
             {
-                foreach (var commandName in context.GetAvailableCommandNames())
+                foreach (var commandName in appProxy.GetAvailableCommandNames())
                 {
-                    BaseCommand command = context.GetCommand(commandName);
+                    BaseCommand command = appProxy.GetCommand(commandName);
                     Console.WriteLine(command.HelpText);
                 }
             } else {
-                Console.WriteLine(context.PreviousRanCommand.HelpText);
+                Console.WriteLine(appProxy.PreviousRanCommand.HelpText);
             }
         }
     }

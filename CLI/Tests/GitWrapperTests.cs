@@ -11,7 +11,7 @@ public class GitWrapperTests
     [TestMethod]
     public void TestGetDiffForPreviousCommit()
     {
-        var diff = new GitWrapper($"{workingDir}/web-basics-hello-world").GetDiffForPreviousCommit();
+        string diff = new GitWrapper($"{workingDir}/web-basics-hello-world").GetDiffForPreviousCommit();
         Assert.AreEqual(new CliFileHelper(workingDir).ReadFile("two_consecutive_commits.diff"), diff);
     }
 
@@ -44,7 +44,7 @@ public class GitWrapperTests
     public void TestGetCommitHashesAndFilesAtHEAD()
     {
         var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
-        var commitFiles = git.GetCommitHashesAndFiles();
+        var commitFiles = git.GetCommitHashAndFiles();
         Assert.AreEqual("62716c9f0e3d93a536f1741c2a4af9597084c82a", commitFiles.Hash);
         string[] expectedFiles = ["README.md"];
         Assert.AreEqual(expectedFiles.Length, commitFiles.Files.Length);
@@ -56,10 +56,21 @@ public class GitWrapperTests
     public void TestGetCommitHashesAndFilesAt1StepFromHEAD()
     {
         var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
-        var commitFiles = git.GetCommitHashesAndFiles(1);
+        var commitFiles = git.GetCommitHashAndFiles(1);
         Assert.AreEqual("a716015cbb15292f808967499de99a356a769378", commitFiles.Hash);
         string[] expectedFiles = ["README.md", "index.css", "index.html", "index.js"];
         Assert.AreEqual(expectedFiles.Length, commitFiles.Files.Length);
         for (int idx=0; idx < commitFiles.Files.Length; idx++) Assert.AreEqual(expectedFiles[idx], commitFiles.Files[idx]);
+    }
+
+    [TestMethod]
+    public void TestGitSubmodule()
+    {
+        string root = "../../../../../";
+        var git = new GitWrapper($"{workingDir}/web-basics-hello-world");
+        Assert.IsTrue(git.IsSubmodule);
+        Assert.IsNotNull(git.Submodule);
+        Assert.AreEqual(Path.GetFullPath(root)[0..^1], Path.GetFullPath(git.Submodule.ParentRepoDirectory));
+        Assert.AreEqual(Path.GetFullPath(Path.Join([root, ".git", "modules", "CLI", "Tests", "Resources", "web-basics-hello-world"])), git.Submodule.GitDirectory);
     }
 }

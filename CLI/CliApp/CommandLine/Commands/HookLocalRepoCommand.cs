@@ -12,7 +12,7 @@ namespace CliApp.CommandLine.Commands
             { "folder-path", new RequiredArgument() }
         };
 
-        public override void Execute(ref CommandContext Context)
+        public override void Execute(ref AppStateProxy appProxy)
         {
             Console.WriteLine("Adding Hooks");
         }

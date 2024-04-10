@@ -1,4 +1,5 @@
-﻿namespace Tests;
+﻿using CliApp;
+namespace Tests;
 
 [TestClass]
 public class CliAppTests
@@ -6,6 +7,6 @@ public class CliAppTests
     [TestMethod]
     public void TestCliAppRanWithNoCommand()
     {
-        Assert.IsTrue(true);
+        CliApp.CliApp.Main([]);
     }
 }

@@ -13,11 +13,6 @@ public class ProcessRunner: IDisposable
     private StringBuilder stdErrBuilder;
     private readonly Process process;
     private bool appendNewline = false;
-    private bool _processClosed = true;
-    public bool ProcessClosed
-    {
-        get => _processClosed;
-    }
 
     public ProcessRunner(string FileName, string WorkingDirectory = "")
     {
@@ -39,7 +34,7 @@ public class ProcessRunner: IDisposable
         process.ErrorDataReceived += StdErrHandler;
     }
 
-    public string RunCommand(string commandOpts, bool appendNewline=false, bool closeWhenDone=true)
+    public string RunCommand(string commandOpts, bool appendNewline=false)
     {
         this.appendNewline = appendNewline;
         ClearOutputs();
@@ -48,11 +43,7 @@ public class ProcessRunner: IDisposable
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         process.WaitForExit();
-        if (closeWhenDone) 
-        {
-            process.Close();
-            _processClosed = true;
-        }
+        process.Close();
         this.appendNewline = false;
         if (HasError) throw new ProcessRunnerException(stdErrBuilder.ToString());
         return stdOutBuilder.ToString().Trim();
@@ -82,7 +73,6 @@ public class ProcessRunner: IDisposable
     public void Dispose()
     {
         // So any derived class doesn't need to implement thier own Dispose method
-        if (!_processClosed) process.Close();
         GC.SuppressFinalize(this);
         process.Dispose();
     }

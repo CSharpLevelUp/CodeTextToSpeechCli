@@ -1,35 +1,64 @@
-﻿namespace Shared
+﻿using System.Diagnostics;
+
+namespace Shared
 {
     public class GitWrapper
     {
-        private readonly bool IsSubmodule;
-        private ProcessRunner gitProcess;
+        private bool _isSubmodule = false;
+        public bool IsSubmodule
+        {
+            get { return _isSubmodule;}
+        }
+        private ProcessRunner _gitProcess;
+        public ProcessRunner GitProcess
+        {
+            get { return _gitProcess;}
+        }
+        private GitSubmodule? _submodule;
+        public GitSubmodule? Submodule
+        {
+            get { return _submodule; }
+        }
+        public string WorkingDirectory;
         public GitWrapper(string path)
+        {
+            Setup(path);
+        }
+
+        public GitWrapper()
+        {
+            string path = new ProcessRunner("git", ".").RunCommand("rev-parse --show-toplevel");
+            Setup(path);
+        }
+        private void Setup(string path)
         {
             CliFileHelper fileHelper = new(path);
             CliFileHelperSearchInfo searchInfo = fileHelper.SearchInLowestDirectory(".git") ?? throw new GitWrapperException($"{path} is not a git repo");
-            IsSubmodule = searchInfo.Type is CliFileType.File;
-            gitProcess = new ProcessRunner("git", path);
+            _isSubmodule = searchInfo.Type is CliFileType.File;
+            _gitProcess = new ProcessRunner("git", fileHelper.CurrentPath);
+            WorkingDirectory = fileHelper.CurrentPath;
+            if (IsSubmodule) _submodule = new GitSubmodule(fileHelper.CurrentPath);
         }
 
-        public string GetDiffForPreviousCommit()
+        public string GetDiffForPreviousCommit(string filename="")
         {
+            if (filename is null) throw new GitWrapperException("Filename argument is null, can't diff null file");
             // Has some async issues when you return it directly
-            string diff = gitProcess.RunCommand(@$"log -1 HEAD -p --no-merges --pretty=format: --no-color");
+            string diff = GitProcess.RunCommand(@$"log -1 HEAD -p --no-merges --pretty=format: --no-color -- {filename}");
             return diff;
         }
 
         public string[] GetFileRevisionCommitHashes(string FileName, int range=1) 
         {
             if (range < 1) throw new GitWrapperException($"Range: {range} is invalid. Value should be greater than 1");
-            string[] hashes = gitProcess.RunCommand(@$" log -{range} HEAD --pretty=format:%H --reverse -- {FileName}", true).Trim().Split('\n');
+            string[] hashes = GitProcess.RunCommand(@$" log -{range} HEAD --pretty=format:%H --reverse -- {FileName}", true).Trim().Split('\n');
             return hashes;
         }
 
-        public GitCommitFiles GetCommitHashesAndFiles(int stepsFromHead=0)
+        public GitCommitFiles GetCommitHashAndFiles(int stepsFromHead=0)
         {
             if (stepsFromHead < 0) throw new GitWrapperException($"Steps from HEAD: {stepsFromHead} is invalid. Value should be greater than 0");
-            string commitFileBlock = gitProcess.RunCommand($"log -1 HEAD^{stepsFromHead} --pretty=tformat:%H --name-only --no-merges", true);
+            string commitFileBlock = GitProcess.RunCommand($"log -1 HEAD^{stepsFromHead} --pretty=tformat:%H --name-only --no-merges", true);
             return new GitCommitFiles(commitFileBlock);
         }
     }
@@ -47,11 +76,19 @@
         }
     }
 
-    // TODO: Find git submodule module path
-    // public class GitSubmodule 
-    // {
-    //     public readonly string ParentDirectory;
-    // }
+    public class GitSubmodule 
+    {
+        public readonly string ParentRepoDirectory;
+        public readonly string GitDirectory;
+
+        public GitSubmodule(string submodulePath)
+        {
+            ParentRepoDirectory = new ProcessRunner("git", submodulePath).RunCommand("rev-parse --show-superproject-working-tree");
+            GitDirectory = Path.Join([..ParentRepoDirectory.Split(['/', '\\']), ".git", "modules", Path.GetRelativePath(ParentRepoDirectory, submodulePath)]);
+            CliFileHelper fileHelper = new(GitDirectory);
+            var _ = fileHelper.SearchInLowestDirectory("hooks") ?? throw new GitWrapperException($"{GitDirectory} is not a valid git submodule");
+        }
+    }
 
     public class GitWrapperException(string message) : Exception(message)
     {
