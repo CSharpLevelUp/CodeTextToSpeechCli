@@ -59,4 +59,4 @@ runs:
     
     - name: Output download Url
       shell: bash
-      run: echo ${{ teps.release-artifact.outputs.browser_download_url }}
+      run: echo ${{ steps.release-artifact.outputs.browser_download_url }}
