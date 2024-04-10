@@ -32,7 +32,7 @@ namespace CliApp.CommandLine.Context
             int expectedArgCount = command.ExpectedArgumentsCount; 
             HashSet<string> requiredArgs = command.GetRequiredArgs();
             string commandArg;
-            while (HasNextArg && command.Arguments is not null)
+            while (command.Arguments is not null)
             {
                 commandArg = appState.GetArgAndMoveToNext();
                 try
@@ -51,7 +51,7 @@ namespace CliApp.CommandLine.Context
                     else throw new CliCommandInvalidException($"Invalid argument: {commandArg}");
                 }
                 expectedArgCount--;
-                if (expectedArgCount == 0) break;
+                if (expectedArgCount == 0 || !HasNextArg) break;
             }
             if (requiredArgs.Count > 0) throw new CliCommandInvalidException($"Missing required arguments {requiredArgs}");
         }
