@@ -45,7 +45,7 @@ jobs:
           tag_name: ${{ steps.tag.outputs.new_tag }}
 
       - name: Build and Upload CliApp
-        uses: ./actions/build-and-publish-artifact
+        uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
           project-directory: ./CLI/CliApp
@@ -53,7 +53,7 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
 
       - name: Builda and Upload Commit Message Hook
-        uses: ./actions/build-and-publish-artifact
+        uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
           project-directory: ./CLI/GitHook/CommitMsgApp
@@ -62,7 +62,7 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
 
       - name: Builda and Upload Commit Message Hook
-        uses: ./actions/build-and-publish-artifact
+        uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
           project-directory: ./CLI/GitHook/PostCommitMsgApp
