@@ -47,7 +47,7 @@ runs:
       run: echo "ARTIFACT_NAME=${{ inputs.artifact-new-name != '' && inputs.artifact-new-name || inputs.artifact-name }}" >> $GITHUB_ENV
 
     - name: Upload Artifact
-      id: release_artifact
+      id: release-artifact
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
@@ -56,3 +56,7 @@ runs:
         asset_path: ${{ inputs.project-directory }}/build-artifacts-${{ inputs.os }}/${{ env.ARTIFACT_NAME }}
         asset_name: ${{ env.ARTIFACT_NAME }}
         asset_content_type: application/zip
+    
+    - name: Output download Url
+      shell: bash
+      run: echo ${{ teps.release-artifact.outputs.browser_download_url }}
