@@ -19,7 +19,7 @@ jobs:
     name: Package-Cli
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
     strategy:
       matrix:
         include:
@@ -35,7 +35,7 @@ jobs:
         id: tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_ACCESS_TOKEN }}
           tag_prefix: v
 
       - name: Create Release
