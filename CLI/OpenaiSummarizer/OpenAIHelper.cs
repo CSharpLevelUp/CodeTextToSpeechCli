@@ -20,7 +20,7 @@ namespace OpenaiSummarizer
                         ""content"": ""Summarize in detail the following diff file: {diffFile}""
                     }}
                 ],
-                ""max_tokens"": 150
+                ""max_tokens"": 1000
             }}";
 
             request.AddStringBody(body, DataFormat.Json);
