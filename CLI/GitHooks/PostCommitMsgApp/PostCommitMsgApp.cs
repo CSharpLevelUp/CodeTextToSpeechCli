@@ -20,7 +20,7 @@ namespace Cli.GitHooks
                 var authService = new AuthService();
                 if (authService.GetAccessToken() == null)
                 {
-                    accessAuth = await authService.GetAccessTokenAsync(Environment.GetEnvironmentVariable("GitCLI_AuthURL"));
+                    accessAuth = await authService.GetAccessTokenAsync("https://dev-01dgwqpxxjssj0wd.us.auth0.com/oauth/token");
                 }
                 else
                 {
