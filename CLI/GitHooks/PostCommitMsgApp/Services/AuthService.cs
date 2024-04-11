@@ -13,15 +13,15 @@ namespace Cli.GitHooks.Services.AuthService
 
         public AuthService()
         {
-            _redirectUri = Environment.GetEnvironmentVariable("GitCLI_RedirectURI")!;
+            _redirectUri = "http://localhost:5000/";
             _httpServer = new HttpServer(_redirectUri);
         }
 
         public void browserAuth()
         {
             string auth0Domain = "dev-01dgwqpxxjssj0wd.us.auth0.com";
-            string clientId = Environment.GetEnvironmentVariable("gitCLI_ClientID")!;
-            string redirectUri = Environment.GetEnvironmentVariable("GitCLI_RedirectURI")!.ToString();
+            string clientId = "ciYKIQ6wWxIdmGMzD4CAeofDxOM5LGTE";
+            string redirectUri = "http://localhost:5000/";
 
             UriBuilder uriBuilder = new UriBuilder("https", auth0Domain);
             uriBuilder.Path = "/authorize";
@@ -46,8 +46,8 @@ namespace Cli.GitHooks.Services.AuthService
 
             var tokenRequest = new TokenRequest
             {
-                ClientId = Environment.GetEnvironmentVariable("GitCLI_ClientID")!,
-                ClientSecret = Environment.GetEnvironmentVariable("GitCLI_ClientSecret")!,
+                ClientId = "ciYKIQ6wWxIdmGMzD4CAeofDxOM5LGTE",
+                ClientSecret = Environment.GetEnvironmentVariable("GitCLI_ClientSecret")!, // {{AUTH_CLIENT_ID}}
                 Code = authorizationCode,
                 RedirectUri = _redirectUri,
                 GrantType = "authorization_code"

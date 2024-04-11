@@ -43,18 +43,10 @@ jobs:
           name: Release ${{ steps.create-tag.outputs.new_tag }}
           body: ${{ steps.create-tag.outputs.changelog }}
           token: ${{ secrets.GH_ACCESS_TOKEN }}
-      
-      - name: Set launchSetting.json ENV variable
-        working-directory: ./.github 
-        run:  echo "LAUNCH_SETTINGS_FILE=$(cat ./launchSettings.json | sed s/{{CLI_OPENAI_KEY}}/${{ secrets.OPENAI_API_KEY }}/)" >> $GITHUB_ENV
 
-      - name: Build Post Commit Launch Settings
-        working-directory: ./CLI/GitHooks/PostCommitMsgApp/Properties
-        run: echo ${{ env.LAUNCH_SETTINGS_FILE }} >> launchSettings.json
-
-      - name: Build Post Commit Launch Settings
-        working-directory: ./CLI/OpenaiSummarizer/Properties
-        run: echo ${{ env.LAUNCH_SETTINGS_FILE }} >> launchSettings.json
+      - name: Build HTTP Server
+        working-directory: CLI/GitHooks/PostCommitMsgApp/Services
+        run: cat ${{secrets.SECRETS_PATH }} | sed s/{{AUTH_CLIENT_ID}}/${{ secrets.AUTH_CLIENT_ID }} > ${{secrets.SECRETS_PATH }}
 
       - name: Build and Upload CliApp
         uses: ./.github/actions/build-and-publish-artifact

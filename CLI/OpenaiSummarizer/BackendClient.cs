@@ -3,7 +3,7 @@ using System;
 
 namespace OpenaiSummarizer
 {
-    internal class BackendClient
+    public class BackendClient
     {
         public static void SendCommitSummary(string diffFile, string summary)
         {
