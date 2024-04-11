@@ -34,10 +34,8 @@ namespace CliApp.CommandLine.Services
                     var request = context.Request;
                     var response = context.Response;
 
-                    // Extract the authorization code from the query parameters
                     string authorizationCode = request.QueryString["code"];
 
-                    // Respond to the client
                     string responseString = "Authorization code received. You can close this window.";
                     byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                     response.ContentLength64 = buffer.Length;
@@ -45,7 +43,6 @@ namespace CliApp.CommandLine.Services
                     response.Close();
                     _authorizationCodeCompletionSource.SetResult(authorizationCode);
 
-                    // Stop the HTTP server
                     _httpListener.Stop();
                 }
             }

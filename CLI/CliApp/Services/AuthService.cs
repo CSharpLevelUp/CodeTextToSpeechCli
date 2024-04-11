@@ -14,18 +14,17 @@ namespace CliApp.CommandLine.Services.AuthService
     {
         private readonly HttpServer _httpServer;
         private String _redirectUri;
+        private String _accessToken;
 
         public AuthService()
         {
             _redirectUri = Environment.GetEnvironmentVariable("GitCLI_RedirectURI")!;
-            Console.WriteLine($"Redirect URI: {_redirectUri}");
             _httpServer = new HttpServer(_redirectUri);
         }
 
         public async Task<string> GetAccessTokenAsync(string tokenEndpoint)
         {
             await _httpServer.StartAsync();
-
             string authorizationCode = await _httpServer.WaitForAuthorizationCodeAsync();
 
             var tokenRequest = new TokenRequest
@@ -49,12 +48,20 @@ namespace CliApp.CommandLine.Services.AuthService
                 {
                     throw new Exception($"Failed to retrieve access token. Error: {tokenResponse.error}");
                 }
-                return tokenResponse.access_token;
+                _accessToken = tokenResponse.access_token;
+                return _accessToken;
             }
             else
             {
                 throw new Exception($"Failed to retrieve access token. Status code: {response.StatusCode}");
             }
         }
+
+        public string GetAccessToken()
+        {
+            return _accessToken;
+        }
+
+        
     }
 }
