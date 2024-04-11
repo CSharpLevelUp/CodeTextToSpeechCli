@@ -21,7 +21,6 @@ namespace Cli.GitHooks
                     string summary = OpenAIHelper.GetDiffSummary(diff, fileHelper.ReadFile());
                     if (summary != null) BackendClient.SendCommitSummary(diff, summary);
                     else throw new Exception("Error: Unable to fetch summary from OpenAI API.");
-                    Program.Main([]);
                 } catch(CliFileHelperException e)
                 {
                     CliFileHelper.CreateAppDirInLocalAppDataIfNotExist();
