@@ -11,7 +11,7 @@ namespace OpenaiSummarizer
             var request = new RestRequest("/api/Git", Method.Post);
             request.AddHeader("Content-Type", "application/json");
 
-            var commitId = 0;
+            var commitId = 0; // remove when BE auto populates it
             var userId = 1;
             var created = DateTime.UtcNow;
             var message = "string";

@@ -6,7 +6,7 @@ public class Program
     {
         string diffFile = args[0];
         Console.WriteLine($"Your diff file is:\n{diffFile}\n");
-        string apiKey = Environment.GetEnvironmentVariable("API_KEY");
+        string apiKey = Environment.GetEnvironmentVariable("CLI_OPENAI_KEY");
 
         Console.WriteLine("Calling Openai to summarize the diff file...");
         string summary = OpenAIHelper.GetDiffSummary(diffFile, apiKey);
