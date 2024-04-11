@@ -18,7 +18,7 @@ namespace OpenaiSummarizer
 
             var body = new
             {   
-                commitId,
+                commitId, // remove when it auto generates on BE
                 userId,
                 created,
                 message,
