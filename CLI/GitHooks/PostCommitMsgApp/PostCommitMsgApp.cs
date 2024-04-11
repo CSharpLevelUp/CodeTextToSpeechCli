@@ -11,7 +11,7 @@ namespace Cli.GitHooks
             var flagSearch = fileHelper.SearchInLowestDirectory("CTTS_COMMIT_FLAG");
             if (true)
             {
-                Program.Main([new GitWrapper().GetDiffForPreviousCommit()]);
+                Program.Main([new GitWrapper().GetDiffForPreviousCommit().Replace('"', '\'')]);
                 // fileHelper.DeletePath("CTTS_COMMIT_FLAG");
             }
         }
