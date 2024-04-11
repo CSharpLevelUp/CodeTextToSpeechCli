@@ -8,7 +8,7 @@ namespace CliApp.CommandLine.Commands
     public class AuthCommand: BaseActionCommand
     {
         public override string Name => "auth";
-        public override string HelpText => "Auth Command Help";
+        public override string HelpText => "Start a SSO session";
 
         public override Dictionary<string, BaseArgument>? Arguments => null;
 

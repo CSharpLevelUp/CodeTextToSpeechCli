@@ -56,4 +56,10 @@ public class TokenRequest
     };
     }
 }
+    public enum CommandVerifyOutcome
+    {
+        Success = 0,
+        Failure = 1, 
+        SetArguments = 2
+    }
 }
