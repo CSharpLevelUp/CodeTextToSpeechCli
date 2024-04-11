@@ -20,7 +20,7 @@ namespace Shared
             CurrentPath = path;
         }
 
-        private static bool PathExists(string path) { return Path.Exists(path); }
+        private static bool PathExists(string path) { return Path.Exists(path) || Directory.Exists(path); }
         
 
         private static bool IsDir(string path)
@@ -58,6 +58,15 @@ namespace Shared
             string newPath = Path.Join(localAppDataPath, name);
             CreatePath(newPath);
             return Path.GetFullPath(newPath);
+        }
+
+        public static string CreateAppDirInLocalAppDataIfNotExist()
+        {
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
+            string appDataPath = Path.Join([localAppDataPath, "CodeTextToSpeech\\"]);
+            if (!(File.Exists(appDataPath) || Directory.Exists(appDataPath)))
+                return CreateInLocalAppData("CodeTextToSpeech\\");
+            return appDataPath;
         }
 
         public CliFileHelperSearchInfo? SearchInLowestDirectory(string name, bool checkParentDirectoryIfFile=false)
