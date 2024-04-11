@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace OpenaiSummarizer
 {
-    internal class OpenAIHelper
+    public class OpenAIHelper
     {
         public static string GetDiffSummary(string diffFile, string apiKey)
         {
