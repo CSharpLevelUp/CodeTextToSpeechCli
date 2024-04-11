@@ -41,17 +41,17 @@ jobs:
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Build Post Commit Launch Settings
-        working-directory: ./CLI/GitHooks/PostCommitMsgApp/Properties
+        working-directory: CLI/GitHooks/PostCommitMsgApp/Properties
         run: echo "$(cat ./../../../.github/launchSettings.json | sed s/{{CLI_OPENAI_KEY}}/${{ secrets.OPENAI_API_KEY }}/)" >> launchSettings.json
 
       - name: Build Post Commit Launch Settings
-        working-directory: ./CLI/OpenaiSummarizer/Properties
+        working-directory: CLI/OpenaiSummarizer/Properties
         run: echo "$(cat ./../../.github/launchSettings.json | sed s/{{CLI_OPENAI_KEY}}/${{ secrets.OPENAI_API_KEY }}/)" >> launchSettings.json
 
       - name: Build and Upload CliApp
         uses: ./.github/actions/build-and-publish-artifact
         with:
-          os: ${{ matrix.os }}
+          os: win
           project-directory: ./CLI/CliApp
           artifact-name: CliApp.exe
           upload-url: ${{ steps.create-release.outputs.upload_url }}
