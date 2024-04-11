@@ -9,7 +9,7 @@ namespace Cli.GitHooks.Services.AuthService
     {
         private readonly HttpServer _httpServer;
         private String _redirectUri;
-        private String _accessToken;
+        private TokenResponse _tokenResponse;
 
         public AuthService()
         {
@@ -38,7 +38,7 @@ namespace Cli.GitHooks.Services.AuthService
             Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
         }
 
-        public async Task<string> GetAccessTokenAsync(string tokenEndpoint)
+        public async Task<TokenResponse> GetAccessTokenAsync(string tokenEndpoint)
         {
             browserAuth();
             await _httpServer.StartAsync();
@@ -60,14 +60,14 @@ namespace Cli.GitHooks.Services.AuthService
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("responseContent\n" + responseContent);
                 var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
                 if (tokenResponse.error != null)
                 {
                     throw new Exception($"Failed to retrieve access token. Error: {tokenResponse.error}");
                 }
-                _accessToken = tokenResponse.access_token;
-                var id = tokenResponse.id_token;
-                return _accessToken;
+                _tokenResponse = tokenResponse;
+                return tokenResponse;
             }
             else
             {
@@ -75,9 +75,9 @@ namespace Cli.GitHooks.Services.AuthService
             }
         }
 
-        public string GetAccessToken()
+        public TokenResponse GetAccessToken()
         {
-            return _accessToken;
+            return _tokenResponse;
         }
 
         

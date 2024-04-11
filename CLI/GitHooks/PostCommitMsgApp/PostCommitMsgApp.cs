@@ -2,6 +2,7 @@
 using OpenaiSummarizer;
 using CliApp.CommandLine.Context;
 using Cli.GitHooks.Services.AuthService;
+using CliApp.CommandLine.DataClasses;
 
 namespace Cli.GitHooks
 {
@@ -13,21 +14,20 @@ namespace Cli.GitHooks
             var flagSearch = fileHelper.SearchInLowestDirectory("CTTS_COMMIT_FLAG");
             if (true)
             {
-                var accessToken = "";
+                TokenResponse accessAuth = null;
                 var authService = new AuthService();
-                if(authService.GetAccessToken() == "")
+                if (authService.GetAccessToken() == null)
                 {
-                    accessToken = await authService.GetAccessTokenAsync(Environment.GetEnvironmentVariable("GitCLI_AuthURL"))!;
-
+                    accessAuth = await authService.GetAccessTokenAsync(Environment.GetEnvironmentVariable("GitCLI_AuthURL"));
                 }
                 else
                 {
-                    accessToken = authService.GetAccessToken();
+                    accessAuth = authService.GetAccessToken();
                 }
-                authService.GetAccessToken();
-                Console.WriteLine($"Access Token: {accessToken}");
+                Console.WriteLine($"Access Token: {accessAuth.access_token}");
+                Console.WriteLine($"ID Token: {accessAuth.ToString()}");
 
-                Program.Main([new GitWrapper().GetDiffForPreviousCommit().Replace('"', '\'')]);
+                Program.Main([new GitWrapper().GetDiffForPreviousCommit().Replace('"', '\''), accessAuth.access_token]);
                 // fileHelper.DeletePath("CTTS_COMMIT_FLAG");
             }
         }
