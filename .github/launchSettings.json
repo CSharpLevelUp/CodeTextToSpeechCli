@@ -1,0 +1,10 @@
+{
+    "profiles": {
+      "OpenaiSummarizer": {
+        "commandName": "Project",
+        "environmentVariables": {
+          "CLI_OPENAI_KEY": "{{CLI_OPENAI_KEY}}"
+        }
+      }
+    }
+  }
