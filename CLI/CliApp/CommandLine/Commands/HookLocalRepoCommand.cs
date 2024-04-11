@@ -31,12 +31,12 @@ namespace CliApp.CommandLine.Commands
                     if (Arguments is null) throw new ArgumentNullException($"Command {this.Name} arguments are null when value is expected");
                     if (Arguments["folder-path"].Value is null) throw new ArgumentNullException($"Command argument folder-path is null");
                     GitWrapper gitWrapper = new(Arguments["folder-path"].Value);
-                    var outputPath = Path.Combine(
+                    var outputPath = Path.Join([
                         (gitWrapper.IsSubmodule && gitWrapper.Submodule is not null) 
                             ? gitWrapper.Submodule.GitDirectory 
                             : gitWrapper.WorkingDirectory, 
-                        "hooks");
-                    File.Move(Path.GetFullPath(Path.Combine("./", filename)), outputPath);
+                        ".git", "hooks"]);
+                    File.Move(Path.GetFullPath(Path.Combine("./", filename)), Path.Join([outputPath, filename]));
                 }
             }
         }
