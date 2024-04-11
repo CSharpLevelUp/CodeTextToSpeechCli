@@ -26,8 +26,6 @@ namespace Cli.GitHooks
                 {
                     accessAuth = authService.GetAccessToken();
                 }
-                Console.WriteLine($"Access Token: {accessAuth.access_token}");
-                Console.WriteLine($"ID Token: {accessAuth.ToString()}");
 
                 try 
                 {
@@ -35,7 +33,10 @@ namespace Cli.GitHooks
                     CliFileHelper fileHelper = new(path);
                     string diff = new GitWrapper().GetDiffForPreviousCommit().Replace('"', '\'');
                     string summary = OpenAIHelper.GetDiffSummary(diff, fileHelper.ReadFile());
-                    if (summary != null) BackendClient.SendCommitSummary(diff, summary);
+                    if (summary != null) 
+                    {
+                        BackendClient.SendCommitSummary(diff, summary);
+                    }
                     else throw new Exception("Error: Unable to fetch summary from OpenAI API.");
                 } catch(CliFileHelperException e)
                 {

@@ -60,7 +60,6 @@ namespace Cli.GitHooks.Services.AuthService
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("responseContent\n" + responseContent);
                 var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
                 if (tokenResponse.error != null)
                 {
