@@ -38,14 +38,12 @@ internal class Program
             ""max_tokens"": 150
         }}";
 
-
-
-
         request.AddStringBody(body, DataFormat.Json);
         RestResponse response = client.Execute(request);
         // full reponse bellow
         //Console.WriteLine(response.Content);
-
+        
+        string content;
         // Check if the request was successful
         if (response.IsSuccessful)
         {
@@ -53,14 +51,41 @@ internal class Program
             JObject jsonResponse = JObject.Parse(response.Content);
 
             // Extract the content from the response
-            string content = jsonResponse["choices"][0]["message"]["content"].ToString();
+            content = jsonResponse["choices"][0]["message"]["content"].ToString();
 
             // Print the extracted content
-            Console.WriteLine(content);
+            Console.WriteLine(content + "\n");
         }
         else
         {
+            content = "Error: Unable to fetch response from the API.";
             Console.WriteLine("Error: Unable to fetch response from the API.");
         }
+
+
+        Console.WriteLine("Calling backend application: /api/Git...");
+        var apiUrl = "https://localhost:5000";
+        var userId = 1;
+        var created = DateTime.UtcNow;
+        var message = "string";
+        var apiGetOptions = new RestClientOptions(apiUrl)
+        {
+            MaxTimeout = -1,
+        };
+        var apiGetClient = new RestClient(apiGetOptions);
+        var apiGetRequest = new RestRequest("/api/Git", Method.Post);
+        apiGetRequest.AddHeader("Content-Type", "application/json");
+        var apiGetBody = new
+        {
+            userId,
+            created,
+            message,
+            diff = diffFile,
+            summary = content
+        };
+        apiGetRequest.AddJsonBody(apiGetBody);
+        RestResponse apiGetResponse = apiGetClient.Execute(apiGetRequest);
+        Console.WriteLine("/api/Git response:\n");
+        Console.WriteLine(apiGetResponse.Content);
     }
 }
