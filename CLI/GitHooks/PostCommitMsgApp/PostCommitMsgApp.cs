@@ -26,16 +26,15 @@ namespace Cli.GitHooks
                 {
                     accessAuth = authService.GetAccessToken();
                 }
-                Console.WriteLine($"Access Token: {accessAuth.access_token}");
-                Console.WriteLine($"ID Token: {accessAuth.ToString()}");
 
                 try 
                 {
                     string path = Path.Join([Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create), "CodeTextToSpeech", "openai-key"]);
                     CliFileHelper fileHelper = new(path);
                     string diff = new GitWrapper().GetDiffForPreviousCommit().Replace('"', '\'');
+                    Console.WriteLine($"diff:\n {diff}");
                     string summary = OpenAIHelper.GetDiffSummary(diff, fileHelper.ReadFile());
-                    Console.WriteLine($"{summary}");
+                    Console.WriteLine($"summary:\n {summary}");
                     OpenCommandPrompt(summary);
                     if (summary != null) BackendClient.SendCommitSummary(diff, summary, accessAuth.access_token);
                     else throw new Exception("Error: Unable to fetch summary from OpenAI API.");
