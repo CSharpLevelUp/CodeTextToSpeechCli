@@ -9,10 +9,11 @@ namespace CliApp.CommandLine.Commands
     {
         public override string Name => "hook-local-repo";
         public override string HelpText => "Registers Git Hooks on local repo";
-        public override Dictionary<string, BaseArgument>? Arguments => new Dictionary<string, BaseArgument>
+        public Dictionary<string, BaseArgument> _arguments = new()
         {
             { "folder-path", new RequiredArgument("Local path to the repo directory") }
         };
+        public override Dictionary<string, BaseArgument>? Arguments => _arguments;
 
         public override void Execute(ref AppStateProxy appProxy)
         {
@@ -28,7 +29,8 @@ namespace CliApp.CommandLine.Commands
                     var filename = Path.GetFileName(fileUrl);
                     client.DownloadFile(fileUrl, filename);
                     if (Arguments is null) throw new ArgumentNullException($"Command {this.Name} arguments are null when value is expected");
-                    GitWrapper gitWrapper = new(Arguments["folder-path"].Value());
+                    if (Arguments["folder-path"].Value is null) throw new ArgumentNullException($"Command argument folder-path is null");
+                    GitWrapper gitWrapper = new(Arguments["folder-path"].Value);
                     var outputPath = Path.Combine(
                         (gitWrapper.IsSubmodule && gitWrapper.Submodule is not null) 
                             ? gitWrapper.Submodule.GitDirectory 

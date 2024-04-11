@@ -12,7 +12,7 @@ namespace CliApp.CommandLine.CommandBase
 
         public abstract void Execute(ref AppStateProxy appProxy);
 
-        public abstract bool Verify(ref AppStateProxy appProxy);
+        public abstract CommandVerifyOutcome Verify(ref AppStateProxy appProxy);
         public abstract Dictionary<string, BaseArgument>? Arguments {get;}
 
         public CommandInfo GetCommandInfo()
@@ -30,7 +30,7 @@ namespace CliApp.CommandLine.CommandBase
         public void SetArgumentValue(string argumentName, string argumentValue)
         {
             if (Arguments is null || !Arguments.TryGetValue(argumentName, out BaseArgument? argument)) throw new CliCommandArgumentNotFoundException(argumentName);
-            argument.Value(argumentValue);
+            Arguments[argumentName].Value = argumentValue;
         }
 
         public int ExpectedArgumentsCount => (Arguments is not null) ? Arguments.Keys.Count : 0;
@@ -39,17 +39,17 @@ namespace CliApp.CommandLine.CommandBase
     {
         public override CommandType Type => CommandType.NameSpace;
 
-        public override bool Verify(ref AppStateProxy Context)
+        public override CommandVerifyOutcome Verify(ref AppStateProxy Context)
         {
             if (Context.PeekNextArg is null) throw new CliCommandInvalidException($"Invalid use of command: {Name}");
-            return !(Context.PeekNextArg == "help");
+            return !(Context.PeekNextArg == "help") ? CommandVerifyOutcome.Success : CommandVerifyOutcome.Failure;
         }
     }
 
     public abstract class BaseActionCommand: BaseCommand
     {
         public override CommandType Type => CommandType.Action;
-        public override bool Verify(ref AppStateProxy appProxy)
+        public override CommandVerifyOutcome Verify(ref AppStateProxy appProxy)
         {
             int commandExpectedArgCount = (Arguments is not null) ? Arguments.Keys.Count : 0;
             // Handles when we expecting arguments
@@ -58,33 +58,23 @@ namespace CliApp.CommandLine.CommandBase
                 // We recieved no arguments
                 if (!appProxy.HasNextArg) throw new CliCommandInvalidException($"Missing arguments for command {Name}");
                 else {
-                    appProxy.SetCommandArgs(this);
+                    return CommandVerifyOutcome.SetArguments;
                 }
             }
             // Handles when we not expecting an argument but have some
             else if (commandExpectedArgCount == 0 && appProxy.HasNextArg)
             {
                 if (appProxy.PeekNextArg != "help") throw new CliCommandInvalidException($"{appProxy.PreviousRanCommand?.CommandName} Doesn't take any arguments");
-                return false;
+                return CommandVerifyOutcome.Failure;
             }
-            return true;
+            return CommandVerifyOutcome.Success;
         }
     }
 
-    public abstract class BaseArgument
+    public class BaseArgument
     {
-        private string? _value = null;
-        public string name = string.Empty;
-        public string Value()
-        {
-            if (_value is null) throw new CliCommandRequiredArgumentException($"Argument: {name} is required");
-            return _value;
-        }
-        public void Value(string value)
-        {
-            _value ??= value;
-        }
         private string? _description = null;
+        public string Value { get; set; }
         public string? Description
         {
             get { return _description; }
@@ -96,7 +86,7 @@ namespace CliApp.CommandLine.CommandBase
     {
         public OptionalArgument(string description, string defaultValue="") : base()
         {
-            Value(defaultValue);
+            Value = defaultValue;
             Description = description;
         }
     }
