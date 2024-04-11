@@ -5,25 +5,18 @@ namespace OpenaiSummarizer
 {
     public class BackendClient
     {
-        public static void SendCommitSummary(string diffFile, string summary)
+        public static void SendCommitSummary(string diffFile, string summary, string accessToken)
         {
-
-
             var client = new RestClient("https://localhost:5000");
             var request = new RestRequest("/api/Git", Method.Post);
             request.AddHeader("Content-Type", "application/json");
-            // N.N. add security header: something like this
-            //request.AddHeader("Authentication", )
+            request.AddHeader("Authorization", "Bearer " + accessToken);
 
-            var commitId = 0; // remove when BE auto populates it
-            var userId = 1; // change to real user id
             var created = DateTime.UtcNow;
             var message = "";
 
             var body = new
             {   
-                commitId, // remove when it auto generates on BE
-                userId,
                 created,
                 message,
                 diff = diffFile,
@@ -40,8 +33,11 @@ namespace OpenaiSummarizer
             }
             else
             {
-                Console.WriteLine("Error: Unable to send commit summary to the backend API.");
+                throw new BackendClientException("Error: Unable to send commit summary to the backend API.");
             }
         }
+
+        public class BackendClientException(string message): Exception(message)
+        {}
     }
 }
