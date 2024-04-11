@@ -8,7 +8,6 @@ namespace Cli.GitHooks
         private static readonly Regex regex = FlagRegex();
         public static void Main(string[] args)
         {
-            args = [@"C:\grad\MrBeanStore\.git\COMMIT_EDITMSG"];
             string commitMsgFile = args[0];
             var fileHelper = UpdateFlaggedCommitFile(commitMsgFile);
             if (fileHelper is not null) CreateFlagFile(fileHelper.GetDirectoryPath());

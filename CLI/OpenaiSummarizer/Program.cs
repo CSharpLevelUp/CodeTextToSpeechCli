@@ -20,7 +20,7 @@ public class Program
         }
         else
         {
-            Console.WriteLine("Error: Unable to fetch summary from OpenAI API.");
+            throw new Exception("Error: Unable to fetch summary from OpenAI API.");
         }
     }
 }
