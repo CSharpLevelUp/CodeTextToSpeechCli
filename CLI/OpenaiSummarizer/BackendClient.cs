@@ -33,8 +33,11 @@ namespace OpenaiSummarizer
             }
             else
             {
-                Console.WriteLine("Error: Unable to send commit summary to the backend API.");
+                throw new BackendClientException("Error: Unable to send commit summary to the backend API.");
             }
         }
+
+        public class BackendClientException(string message): Exception(message)
+        {}
     }
 }

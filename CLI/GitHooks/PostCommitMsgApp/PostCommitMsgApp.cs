@@ -13,8 +13,8 @@ namespace Cli.GitHooks
         public static async Task Main(string[] args)
         {
             var flagSearch = fileHelper.SearchInLowestDirectory("CTTS_COMMIT_FLAG");
-            // if (flagSearch is not null)
-            if (true)
+            if (flagSearch is not null)
+            // if (true)
             {
                 TokenResponse accessAuth = null;
                 var authService = new AuthService();
@@ -35,6 +35,7 @@ namespace Cli.GitHooks
                     Console.WriteLine($"diff:\n {diff}");
                     string summary = OpenAIHelper.GetDiffSummary(diff, fileHelper.ReadFile());
                     Console.WriteLine($"summary:\n {summary}");
+                    OpenCommandPrompt(summary);
                     if (summary != null) BackendClient.SendCommitSummary(diff, summary, accessAuth.access_token);
                     else throw new Exception("Error: Unable to fetch summary from OpenAI API.");
                 } catch(CliFileHelperException e)
@@ -42,8 +43,19 @@ namespace Cli.GitHooks
                     CliFileHelper.CreateAppDirInLocalAppDataIfNotExist();
                     throw new CliCommandInvalidException("Register your open ai api key by running the set-openai-api-key --key=<openai api key>");
                 }
-                // fileHelper.DeletePath("CTTS_COMMIT_FLAG");
+                fileHelper.DeletePath("CTTS_COMMIT_FLAG");
             }
+        }
+
+        public static void OpenCommandPrompt(string summary)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = $"echo \"{summary}\"";
+            process.StartInfo = startInfo;
+            process.Start();
         }
     }
 }
