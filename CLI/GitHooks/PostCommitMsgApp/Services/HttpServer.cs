@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CliApp.CommandLine.Services
+namespace Cli.GitHookse.Services
 {
     public class HttpServer
     {
