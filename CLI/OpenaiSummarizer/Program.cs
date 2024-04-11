@@ -1,8 +1,8 @@
 ﻿using OpenaiSummarizer;
 using System;
-internal class Program
+public class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
         string diffFile = args[0];
         Console.WriteLine($"Your diff file is:\n{diffFile}\n");
