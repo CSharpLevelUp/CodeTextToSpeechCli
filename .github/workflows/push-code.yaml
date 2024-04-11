@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - develop
+      - feature/* 
 
 permissions:
     id-token: write
@@ -19,11 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-    strategy:
-      matrix:
-        include:
-          - os: win
-            ext: .exe
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v4
@@ -50,38 +46,38 @@ jobs:
 
       - name: Build Post Commit Launch Settings
         working-directory: ./CLI/GitHooks/PostCommitMsgApp/Properties
-        run: echo ${{ env.LAUNCH_SETTINGS_FILE }} >> launchSettings.json
+        run: echo '${{ env.LAUNCH_SETTINGS_FILE }}' >> launchSettings.json
 
       - name: Build Post Commit Launch Settings
         working-directory: ./CLI/OpenaiSummarizer/Properties
-        run: echo ${{ env.LAUNCH_SETTINGS_FILE }} >> launchSettings.json
+        run: echo '${{ env.LAUNCH_SETTINGS_FILE }}' >> launchSettings.json
 
       - name: Build and Upload CliApp
         uses: ./.github/actions/build-and-publish-artifact
         with:
           os: ${{ matrix.os }}
           project-directory: ./CLI/CliApp
-          artifact-name: CliApp${{ matrix.ext }}
+          artifact-name: CliApp.exe
           upload-url: ${{ steps.create-release.outputs.upload_url }}
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Build and Upload Commit Message Hook
         uses: ./.github/actions/build-and-publish-artifact
         with:
-          os: ${{ matrix.os }}
+          os: win
           project-directory: ./CLI/GitHooks/CommitMsgApp
-          artifact-name: CommitMsgApp${{ matrix.ext }}
-          artifact-new-name: commit-msg${{ matrix.ext }}
+          artifact-name: CommitMsgApp.exe
+          artifact-new-name: commit-msg.exe
           upload-url: ${{ steps.create-release.outputs.upload_url }}
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Build and Upload Commit Message Hook
         uses: ./.github/actions/build-and-publish-artifact
         with:
-          os: ${{ matrix.os }}
+          os: win
           project-directory: ./CLI/GitHooks/PostCommitMsgApp
-          artifact-name: PostCommitMsgApp${{ matrix.ext }}
-          artifact-new-name: post-commit${{ matrix.ext }}
+          artifact-name: PostCommitMsgApp.exe
+          artifact-new-name: post-commit.exe
           upload-url: ${{ steps.create-release.outputs.upload_url }}
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
 
