@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
     <ProjectReference Include="..\..\OpenaiSummarizer\OpenaiSummarizer.csproj" />
+    <ProjectReference Include="..\..\CliApp\CliApp.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

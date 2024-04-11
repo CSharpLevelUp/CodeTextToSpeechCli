@@ -26,10 +26,10 @@ namespace CliApp.CommandLine.Context
             BaseCommand command;
             do
             {
-                string CurrentArg = appState.GetArgAndMoveToNext();
-                command = appState.GetCommand(CurrentArg);
                 try
                 {
+                    string CurrentArg = appState.GetArgAndMoveToNext();
+                    command = appState.GetCommand(CurrentArg);
                     switch(command.Verify(ref appStateProxy))
                     {
                         case CommandVerifyOutcome.Success: 
@@ -44,7 +44,7 @@ namespace CliApp.CommandLine.Context
                             break;
                         default: throw new UnreachableException();
                     };
-                } catch(CliCommandInvalidException e)
+                } catch(Exception e) when (e is CliCommandInvalidException || e is CliCommandNotFoundException)
                 {
                     Console.Error.WriteLine(e.Message);
                     ExecuteCommand(new HelpCommand());
