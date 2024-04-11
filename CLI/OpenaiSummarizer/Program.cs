@@ -4,7 +4,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        string diffFile = "\\n--- original_file.txt\\n+++ modified_file.txt\\n@@ -1,3 +1,3 @@\\n This is the original content of the file.\\n-Here are some lines that will be removed.\\n+This line has been modified.\\n+An additional line has been added.\\n The end.";
+        string diffFile = args[0];
         Console.WriteLine($"Your diff file is:\n{diffFile}\n");
         string apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
