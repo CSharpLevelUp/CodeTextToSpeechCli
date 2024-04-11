@@ -27,7 +27,7 @@ namespace Shared
 
         public GitWrapper()
         {
-            string path = new ProcessRunner("git", ".").RunCommand("rev-parse --show-toplevel");
+            string? path = Path.GetDirectoryName(new ProcessRunner("git", ".").RunCommand("rev-parse --absolute-git-dir")) ?? throw new GitWrapperException("Got null trying to instantiate GitWrapper from current path");
             Setup(path);
         }
         private void Setup(string path)
