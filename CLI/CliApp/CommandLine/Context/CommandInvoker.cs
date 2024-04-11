@@ -30,7 +30,6 @@ namespace CliApp.CommandLine.Context
                 command = appState.GetCommand(CurrentArg);
                 try
                 {
-                    //if (command.Verify(ref appStateProxy)) ExecuteCommand(command);
                     switch(command.Verify(ref appStateProxy))
                     {
                         case CommandVerifyOutcome.Success: 
