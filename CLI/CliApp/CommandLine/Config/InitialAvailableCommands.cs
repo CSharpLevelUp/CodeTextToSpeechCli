@@ -7,8 +7,8 @@ namespace CliApp.CommandLine.Config
     public class InitialAvailableCommands: BaseAvailableCommands
     {
         public override BaseCommand[] AvailableCommands => [
-            new AuthCommand(),
-            new HookLocalRepoCommand()
+            new HookLocalRepoCommand(),
+            new SetOpenAiApiKeyCommand()
         ];
 
         public InitialAvailableCommands(): base()
