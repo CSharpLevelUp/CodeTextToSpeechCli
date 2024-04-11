@@ -26,4 +26,11 @@ namespace CliApp.CommandLine.DataClasses
         NameSpace = 0,
         Action = 1
     }
+
+    public enum CommandVerifyOutcome
+    {
+        Success = 0,
+        Failure = 1, 
+        SetArguments = 2
+    }
 }

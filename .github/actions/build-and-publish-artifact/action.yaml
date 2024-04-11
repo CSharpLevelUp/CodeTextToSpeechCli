@@ -1,0 +1,62 @@
+name: "Upload Artifact To Release"
+description: "Creates a new release and tag, then uploads an artifact to said release"
+
+inputs:
+  os:
+    description: "OS target for current build"
+    required: true
+  project-directory:
+    description: "Project directory:"
+    required: true
+  artifact-name:
+    description: "Artifact name"
+    required: true
+  artifact-new-name:
+    description: "New name for artifact"
+  upload-url:
+    description: "Release upload url"
+    required: true
+  github-token:
+    description: "Token for GitHub API access"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Branch
+      uses: actions/checkout@v4
+    
+    - name: Setup DOTNET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8'
+    
+    - name: Building Artifact
+      shell: bash
+      working-directory: ${{ inputs.project-directory }}
+      run: dotnet publish --configuration Release --self-contained --os ${{ inputs.os }} --output ./build-artifacts-${{ inputs.os }}
+    
+    - name: Rename artifact
+      shell: bash
+      if: ${{ inputs.artifact-new-name != ''}}
+      working-directory: ${{ inputs.project-directory }}/build-artifacts-${{ inputs.os }}
+      run: mv ./${{ inputs.artifact-name }} ./${{ inputs.artifact-new-name }}
+
+    - name: Set ENV variables
+      shell: bash
+      run: echo "ARTIFACT_NAME=${{ inputs.artifact-new-name != '' && inputs.artifact-new-name || inputs.artifact-name }}" >> $GITHUB_ENV
+
+    - name: Upload Artifact
+      id: release-artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      with:
+        upload_url: ${{ inputs.upload-url }}
+        asset_path: ${{ inputs.project-directory }}/build-artifacts-${{ inputs.os }}/${{ env.ARTIFACT_NAME }}
+        asset_name: ${{ env.ARTIFACT_NAME }}
+        asset_content_type: application/zip
+    
+    - name: Output download Url
+      shell: bash
+      run: echo ${{ steps.release-artifact.outputs.browser_download_url }}
