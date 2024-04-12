@@ -14,7 +14,7 @@ namespace Cli.GitHooks
         {
             string commitMsgFile = args[0];
             var fileHelper = UpdateFlaggedCommitFile(commitMsgFile);
-            if (fileHelper is not null) AuthUser();
+            if (fileHelper is not null) await AuthUser();
         }
 
         // Builds regex at compile time
@@ -43,7 +43,7 @@ namespace Cli.GitHooks
             return fileHelper.CreateInPath("CTTS_FLAGGED_COMMIT");
         }
 
-        public static async void AuthUser()
+        public static async Task AuthUser()
         {
             TokenResponse accessAuth = null;
             var authService = new AuthService();
