@@ -10,7 +10,7 @@ namespace Cli.GitHooks
         {
             string commitMsgFile = args[0];
             var fileHelper = UpdateFlaggedCommitFile(commitMsgFile);
-            if (fileHelper is not null) CreateFlagFile(Path.Join(fileHelper.GetDirectoryPath(), "hooks"));
+            if (fileHelper is not null) CreateFlagFile(fileHelper.GetDirectoryPath());
         }
 
         // Builds regex at compile time
@@ -33,7 +33,7 @@ namespace Cli.GitHooks
         {
             CliFileHelper fileHelper = new(path);
             string parentDirectory = (fileHelper.IsDirectory) ? fileHelper.CurrentPath: fileHelper.GetDirectoryPath();
-            // parentDirectory = Path.Join([parentDirectory, "hooks"]);
+            parentDirectory = Path.Join([parentDirectory, "hooks"]);
             // Should error out if hooks directory doesn't exist
             fileHelper = new(parentDirectory);
             return fileHelper.CreateInPath("CTTS_FLAGGED_COMMIT");
