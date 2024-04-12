@@ -12,8 +12,8 @@ namespace Cli.GitHooks
         private static readonly CliFileHelper fileHelper = new(".");
         public static async Task Main(string[] args)
         {
-            var flagSearch = fileHelper.SearchInLowestDirectory("CTTS_COMMIT_FLAG");
-            if (flagSearch is not null)
+            var flagPath = Path.Join([new ProcessRunner("git", ".").RunCommand("rev-parse --absolute-git-dir"), "hooks", "CTTS_FLAGGED_COMMIT"]);
+            if (File.Exists(flagPath))
             // if (true)
             {
                 TokenResponse accessAuth = null;
@@ -43,7 +43,7 @@ namespace Cli.GitHooks
                     CliFileHelper.CreateAppDirInLocalAppDataIfNotExist();
                     throw new CliCommandInvalidException("Register your open ai api key by running the set-openai-api-key --key=<openai api key>");
                 }
-                fileHelper.DeletePath("CTTS_COMMIT_FLAG");
+                new CliFileHelper(flagPath).DeletePath();
             }
         }
 
