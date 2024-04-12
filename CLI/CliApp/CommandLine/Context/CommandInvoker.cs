@@ -1,5 +1,7 @@
-﻿using CliApp.CommandLine.CommandBase;
+﻿using System.Diagnostics;
+using CliApp.CommandLine.CommandBase;
 using CliApp.CommandLine.Commands;
+using CliApp.CommandLine.DataClasses;
 using CliApp.CommandLine.Exceptions;
 
 namespace CliApp.CommandLine.Context
@@ -24,17 +26,59 @@ namespace CliApp.CommandLine.Context
             BaseCommand command;
             do
             {
-                string CurrentArg = appState.GetArgAndMoveToNext();
-                command = appState.GetCommand(CurrentArg);
                 try
                 {
-                    if (command.Verify(ref appStateProxy)) ExecuteCommand(command);
-                } catch(CliCommandInvalidException e)
+                    string CurrentArg = appState.GetArgAndMoveToNext();
+                    command = appState.GetCommand(CurrentArg);
+                    switch(command.Verify(ref appStateProxy))
+                    {
+                        case CommandVerifyOutcome.Success: 
+                            ExecuteCommand(command);
+                            break;
+                        case CommandVerifyOutcome.Failure:
+                            ExecuteCommand(new HelpCommand());
+                            break;
+                        case CommandVerifyOutcome.SetArguments:
+                            SetCommandArgs(command);
+                            ExecuteCommand(command);
+                            break;
+                        default: throw new UnreachableException();
+                    };
+                } catch(Exception e) when (e is CliCommandInvalidException || e is CliCommandNotFoundException)
                 {
                     Console.Error.WriteLine(e.Message);
                     ExecuteCommand(new HelpCommand());
                 }
             } while(appState.HasNextArg);
+        }
+
+        public void SetCommandArgs(BaseCommand command)
+        {
+            int expectedArgCount = command.ExpectedArgumentsCount; 
+            HashSet<string> requiredArgs = command.GetRequiredArgs();
+            string commandArg;
+            while (command.Arguments is not null)
+            {
+                commandArg = appState.GetArgAndMoveToNext();
+                try
+                {
+                    if (!commandArg[..2].Equals("--") || commandArg[..2].Length < 1) throw new CliCommandInvalidException($"Invalid argument: {commandArg} arguments must start with --");
+                    commandArg = commandArg[2..];
+                    var commandArgKeyVal = commandArg.Split("=");
+                    if (commandArgKeyVal.Length != 2) throw new CliCommandInvalidException($"Invalid argument: {commandArg}, value missing for key");
+                    var commandArgKey = commandArgKeyVal[0].Trim();
+                    requiredArgs.Remove(commandArgKey);
+                    command.Arguments[commandArgKey].Value = commandArgKeyVal[1].Trim();
+                } 
+                catch(Exception e) when (e is ArgumentOutOfRangeException || e is CliCommandArgumentNotFoundException)
+                {
+                    if (e is CliCommandArgumentNotFoundException) throw new CliCommandInvalidException(e.Message);
+                    else throw new CliCommandInvalidException($"Invalid argument: {commandArg}");
+                }
+                expectedArgCount--;
+                if (expectedArgCount == 0 || !appState.HasNextArg) break;
+            }
+            if (requiredArgs.Count > 0) throw new CliCommandInvalidException($"Missing required arguments {requiredArgs}");
         }
     }
 }

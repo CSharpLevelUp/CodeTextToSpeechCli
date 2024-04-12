@@ -5,6 +5,7 @@
 
 # dotenv files
 .env
+**/launchSettings.json
 
 # User-specific files
 *.rsuser
@@ -486,3 +487,4 @@ $RECYCLE.BIN/
 # ACT secrets file
 **/*.secrets
 .vscode/settings.json
+/CLI/OpenaiSummarizer/Properties/launchSettings.json

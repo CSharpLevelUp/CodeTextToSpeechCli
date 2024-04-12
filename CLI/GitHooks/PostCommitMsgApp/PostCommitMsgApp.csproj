@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CliApp\CliApp.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\OpenaiSummarizer\OpenaiSummarizer.csproj" />
+    <ProjectReference Include="..\..\CliApp\CliApp.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -9,6 +12,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
-
 </Project>

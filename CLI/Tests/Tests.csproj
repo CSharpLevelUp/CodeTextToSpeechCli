@@ -22,12 +22,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\CliApp\CliApp.csproj" />
-    <ProjectReference Include="..\GitHooks\CommitMsgApp\CommitMsgApp.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\hooks\" />
-    <Folder Include="Resources\web-basics-hello-world"/>
   </ItemGroup>
 </Project>

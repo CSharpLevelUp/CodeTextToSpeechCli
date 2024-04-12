@@ -1,0 +1,80 @@
+name: Package-CLI-Artifacts
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+
+permissions:
+    id-token: write
+    contents: read
+
+concurrency:
+  group: ${{ github.workflow }} - ${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  Package-Cli:
+    name: Package-Cli
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+    strategy:
+      matrix:
+        include:
+          - os: win
+            ext: .exe
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        id: create-tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GH_ACCESS_TOKEN }}
+          tag_prefix: v
+
+      - name: Create a GitHub release
+        id: create-release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.create-tag.outputs.new_tag }}
+          name: Release ${{ steps.create-tag.outputs.new_tag }}
+          body: ${{ steps.create-tag.outputs.changelog }}
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Build HTTP Server
+        working-directory: CLI/GitHooks/PostCommitMsgApp/Services
+        run: cat ${{secrets.SECRETS_PATH }} | sed s/{{AUTH_CLIENT_ID}}/${{ secrets.AUTH_CLIENT_ID }}/ > ${{secrets.SECRETS_PATH }}
+
+      - name: Build and Upload CliApp
+        uses: ./.github/actions/build-and-publish-artifact
+        with:
+          os: ${{ matrix.os }}
+          project-directory: ./CLI/CliApp
+          artifact-name: CliApp${{ matrix.ext }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Build and Upload Commit Message Hook
+        uses: ./.github/actions/build-and-publish-artifact
+        with:
+          os: ${{ matrix.os }}
+          project-directory: ./CLI/GitHooks/CommitMsgApp
+          artifact-name: CommitMsgApp${{ matrix.ext }}
+          artifact-new-name: commit-msg${{ matrix.ext }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Build and Upload Commit Message Hook
+        uses: ./.github/actions/build-and-publish-artifact
+        with:
+          os: ${{ matrix.os }}
+          project-directory: ./CLI/GitHooks/PostCommitMsgApp
+          artifact-name: PostCommitMsgApp${{ matrix.ext }}
+          artifact-new-name: post-commit${{ matrix.ext }}
+          upload-url: ${{ steps.create-release.outputs.upload_url }}
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+
