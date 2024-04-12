@@ -10,10 +10,10 @@ namespace OpenaiSummarizer
             var client = new RestClient("https://localhost:5000");
             var request = new RestRequest("/api/Git", Method.Post);
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + accessToken);
+            //request.AddHeader("Authorization", "Bearer " + accessToken);
 
             var created = DateTime.UtcNow;
-            var message = "";
+            var message = "no message";
 
             var body = new
             {   

@@ -12,18 +12,24 @@ namespace OpenaiSummarizer
             var request = new RestRequest("/chat/completions", Method.Post);
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", $"Bearer {apiKey}");
-            var body = $@"{{    
-                ""model"": ""gpt-3.5-turbo"",
-                ""messages"": [
-                    {{
-                        ""role"": ""system"",
-                        ""content"": ""Summarize in detail the following diff file: {diffFile}""
-                    }}
-                ],
-                ""max_tokens"": 1000
-            }}";
 
-            request.AddStringBody(body, DataFormat.Json);
+            dynamic requestBody = new
+            {
+                model = "gpt-3.5-turbo",
+                messages = new[]
+                {
+                    new
+                    {
+                        role = "system",
+                        content = $"Summarize in detail the following diff file: {diffFile}"
+                    }
+                },
+                max_tokens = 1000
+            };
+            string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+
+            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
             RestResponse response = client.Execute(request);
 
             if (response.IsSuccessful)
