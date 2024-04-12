@@ -12,7 +12,7 @@ namespace Cli.GitHooks
         private static readonly CliFileHelper fileHelper = new(".");
         public static async Task Main(string[] args)
         {
-            var flagPath = Path.Join([fileHelper.CurrentPath,"CTTS_FLAGGED_COMMIT"]);
+            var flagPath = Path.Join([new ProcessRunner("git", ".").RunCommand("rev-parse --absolute-git-dir"), "hooks", "CTTS_FLAGGED_COMMIT"]);
             if (File.Exists(flagPath))
             // if (true)
             {
