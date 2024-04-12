@@ -20,8 +20,8 @@ namespace CliApp.CommandLine.Commands
             using(WebClient client = new())
             {
                 string[] fileUrls = [
-                    "https://github.com/CSharpLevelUp/CodeTextToSpeechCli/releases/download/v0.0.2-feature-cli-ci-cd.13/commit-msg.exe",
-                    "https://github.com/CSharpLevelUp/CodeTextToSpeechCli/releases/download/v0.0.2-feature-cli-ci-cd.13/post-commit.exe"
+                    "https://github.com/CSharpLevelUp/CodeTextToSpeechCli/releases/download/v0.0.2-feature-cli-ci-cd.15/commit-msg.exe",
+                    "https://github.com/CSharpLevelUp/CodeTextToSpeechCli/releases/download/v0.0.2-feature-cli-ci-cd.15/post-commit.exe"
                 ];
 
                 foreach(string fileUrl in fileUrls)
