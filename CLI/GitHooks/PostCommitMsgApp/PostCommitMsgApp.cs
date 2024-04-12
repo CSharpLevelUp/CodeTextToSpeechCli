@@ -13,7 +13,7 @@ namespace Cli.GitHooks
         public static async Task Main(string[] args)
         {
 
-            var flagSearch = new CliFileHelper(Path.Join([fileHelper.CurrentPath, "hooks"])).SearchInLowestDirectory("CTTS_COMMIT_FLAG");
+            var flagSearch = new CliFileHelper(Path.Join([fileHelper.CurrentPath, ".git", "hooks"])).SearchInLowestDirectory("CTTS_COMMIT_FLAG");
             if (flagSearch is not null)
             // if (true)
             {
